@@ -1,394 +1,272 @@
-<<<<<<< HEAD
-# Plant Leaf Disease Detection using MobileNetV2
+# 🌿 Plant Leaf Disease Detection Using Machine Learning
 
-An end-to-end deep-learning project that classifies plant leaf images into 38 PlantVillage crop/disease categories using transfer learning with MobileNetV2. Includes dataset preparation, training, evaluation, command-line prediction, and an optional Streamlit interface.
+A deep learning-based application that identifies plant leaf diseases from images using **MobileNetV2 Transfer Learning**, TensorFlow, and Streamlit. The application allows users to upload a leaf image and receive predicted disease classes along with confidence scores.
 
-> **Important:** This is an educational prototype, not a definitive agricultural diagnosis. PlantVillage images are mostly collected in controlled conditions, so real farm photos can produce less reliable predictions.
+## 📌 Project Overview
 
-## Features
+Plant diseases can significantly affect crop quality and agricultural productivity. Early identification can help farmers and agricultural researchers take appropriate action.
 
-- PlantVillage dataset downloader using TensorFlow Datasets (avoids the currently inconsistent Hugging Face `color` config issue)
-- 80/20 train/test export; validation split made from the training directory
-- MobileNetV2 transfer learning with ImageNet weights and data augmentation
-- Saved model, class names, training curves, test report, and confusion matrix
-- Command-line image prediction and optional Streamlit web app
+This project uses a convolutional neural network based on MobileNetV2, pretrained on ImageNet and fine-tuned for plant disease classification. The trained model predicts the most likely disease category from an uploaded leaf image.
 
-## Project structure
+The model was evaluated on a held-out test dataset and achieved **95.35% test accuracy** in the recorded evaluation.
+
+## ✨ Features
+
+- 🌱 Plant leaf disease classification from images
+- 🧠 MobileNetV2 transfer learning
+- 📊 Top-three predicted classes with confidence scores
+- 🖥️ Interactive Streamlit web interface
+- 📈 Training curves and evaluation reports
+- 🔍 Confusion matrix visualization
+- 🧪 Single-image prediction through a command-line script
+- ♻️ Reusable model training and evaluation scripts
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Python 3.11 | Programming language |
+| TensorFlow / Keras | Deep learning and model training |
+| MobileNetV2 | Transfer learning architecture |
+| Streamlit | Interactive web application |
+| NumPy | Numerical operations |
+| Matplotlib | Training curves and visualizations |
+| Scikit-learn | Evaluation metrics |
+| PlantVillage | Plant leaf disease image dataset |
+| Git and GitHub | Version control and project hosting |
+
+## 📂 Project Structure
 
 ```text
 Plant-Leaf-Disease-Detection/
+│
+├── dataset/                  # Dataset files (not tracked by Git)
+│
+├── models/
+│   ├── plant_disease_model.keras
+│   └── class_names.json
+│
+├── results/
+│   ├── confusion_matrix.png
+│   ├── evaluation_report.txt
+│   ├── training_curves.png
+│   └── training_log.csv
+│
+├── sample_images/            # Sample leaf images
+│
 ├── src/
-│   ├── check_setup.py
-│   ├── download_dataset.py
-│   ├── train.py
-│   ├── evaluate.py
-│   ├── predict.py
-│   └── app.py
-├── dataset/                 # created on first download; not committed to Git
-├── models/                  # trained model and class map
-├── results/                 # metrics and plots
-├── sample_images/           # put your own leaf image here
-├── requirements.txt
+│   ├── app.py                # Streamlit web application
+│   ├── check_setup.py        # Environment verification
+│   ├── download_dataset.py   # Dataset preparation/download
+│   ├── evaluate.py           # Model evaluation
+│   ├── predict.py             # Single-image prediction
+│   └── train.py              # Model training
+│
 ├── .gitignore
-└── README.md
+├── README.md
+└── requirements.txt
 ```
 
-## Requirements
+## 💻 Hardware Requirements
+
+- Processor: Intel or Apple Silicon processor
+- RAM: 8 GB recommended
+- Storage: Sufficient free space for the dataset, Python environment, and model files
+- GPU: Optional; CPU training and inference may be slower
+
+## 💿 Software Requirements
 
 - macOS, Windows, or Linux
 - Python 3.11 recommended
-- Internet connection for dataset and pretrained model weights
-- Several GB of free disk space; exported JPEGs need additional space beyond the compressed dataset
+- pip
+- Git
+- Visual Studio Code or another code editor
+- A modern web browser
 
-Check your Mac architecture and Python version:
+## 🚀 Installation and Setup
+
+### 1. Clone the repository
 
 ```bash
-uname -m
-python3 --version
+git clone https://github.com/nikhilsangu-ux/Plant-Leaf-Disease-Detection-ML-Project.git
+cd Plant-Leaf-Disease-Detection-ML-Project
 ```
 
-## 1. Create the environment
+### 2. Create a virtual environment
 
-Run these commands from the project root folder in VS Code Terminal:
+For macOS and Linux:
 
 ```bash
-python3 -m venv .venv
+python3.11 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
 ```
 
-Then check the packages:
+For Windows:
+
+```powershell
+py -3.11 -m venv .venv
+.venv\Scripts\activate
+```
+
+### 3. Install dependencies
 
 ```bash
-python src/check_setup.py
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-If TensorFlow installation fails, use Python 3.11 in a fresh virtual environment and follow the official TensorFlow install guidance for your Mac architecture. Do not mix packages from different environments.
+If a dependency fails to install, check that your Python version is compatible with the package versions in `requirements.txt`.
 
-## 2. Download PlantVillage
+### 4. Prepare the dataset
+
+The complete dataset is not included in this Git repository because it occupies approximately 1.3 GB.
+
+Download or prepare the PlantVillage dataset using the project's dataset preparation script:
 
 ```bash
 python src/download_dataset.py
 ```
 
-The first run downloads the PlantVillage dataset through TensorFlow Datasets and exports images into `dataset/PlantVillage/train/` and `dataset/PlantVillage/test/`, grouped into class folders. This may take several minutes and uses substantial disk space. TensorFlow Datasets caches its downloaded files, so a retry may reuse cached data.
+Follow the script's output and ensure the dataset is stored in the directory expected by `src/train.py` and `src/evaluate.py`.
 
-The downloader makes a deterministic 80/20 split from the TFDS `train` split. The training script then takes 20% of the training portion for validation.
+If the script requires a dataset source or configuration, follow the instructions provided by the script.
 
-## 3. Train MobileNetV2
-=======
-# 🌿 Plant Leaf Disease Detection
-
-A Machine Learning project that detects plant leaf diseases from images using **Deep Learning and Transfer Learning**. The system analyzes a leaf image and predicts whether the leaf is healthy or affected by a particular disease.
-
-## 📌 Project Overview
-
-Plant diseases can significantly affect crop production and farmer income. Early identification of diseases can help farmers take appropriate action at the right time.
-
-This project uses the **PlantVillage dataset** and a **MobileNetV2** deep learning model to classify plant leaf images into different disease categories.
-
-The project can be integrated into a mobile or web application where farmers can upload or capture a photo of a plant leaf and receive a disease prediction.
-
-## 🎯 Objectives
-
-* Detect plant diseases from leaf images.
-* Classify leaves as healthy or diseased.
-* Identify the specific disease affecting the plant.
-* Use Transfer Learning to achieve effective image classification.
-* Provide a foundation for an AI-based agricultural assistance system.
-
-## 🧠 Machine Learning Approach
-
-The project uses **Transfer Learning** with **MobileNetV2**.
-
-### Workflow
-
-```text
-Plant Leaf Image
-       ↓
-Image Preprocessing
-       ↓
-Data Augmentation
-       ↓
-MobileNetV2
-       ↓
-Transfer Learning
-       ↓
-Disease Classification
-       ↓
-Predicted Disease
-```
-
-## 📊 Dataset
-
-### PlantVillage Dataset
-
-The model is trained using the **PlantVillage dataset**, which contains labeled images of healthy and diseased plant leaves.
-
-The dataset includes multiple crops and disease categories.
-
-> Dataset: PlantVillage
-
-## 🛠️ Technologies Used
-
-* **Python**
-* **TensorFlow / Keras**
-* **MobileNetV2**
-* **NumPy**
-* **Pandas**
-* **Matplotlib**
-* **Scikit-learn**
-* **OpenCV / PIL**
-* **Jupyter Notebook**
-
-## 📁 Project Structure
-
-```text
-Plant-Leaf-Disease-Detection/
-│
-├── dataset/
-│   └── plantvillage/
-│
-├── notebooks/
-│   └── disease_detection.ipynb
-│
-├── src/
-│   ├── train.py
-│   ├── predict.py
-│   └── preprocess.py
-│
-├── models/
-│   └── plant_disease_model.keras
-│
-├── results/
-│   ├── accuracy.png
-│   └── confusion_matrix.png
-│
-├── requirements.txt
-├── README.md
-└── .gitignore
-```
-
-## ⚙️ Installation
-
-### 1. Clone the repository
+### 5. Verify the environment
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/Plant-Leaf-Disease-Detection.git
+python src/check_setup.py
 ```
 
-### 2. Navigate to the project
+## 🧠 Model Training
 
-```bash
-cd Plant-Leaf-Disease-Detection
-```
-
-### 3. Create a virtual environment
-
-```bash
-python3 -m venv venv
-```
-
-### 4. Activate the virtual environment
-
-For macOS/Linux:
-
-```bash
-source venv/bin/activate
-```
-
-For Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-### 5. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## 🚀 How to Run
-
-### Train the model
->>>>>>> 4f107bb262c90f5a280493954835e6868d43c0f1
+To train the model from scratch, run:
 
 ```bash
 python src/train.py
 ```
 
-<<<<<<< HEAD
-The initial training phase freezes the pretrained MobileNetV2 feature extractor and trains a new classification head. Training time depends on your Mac; you can adjust `EPOCHS` and `BATCH_SIZE` near the top of `src/train.py` if needed.
+The training script uses MobileNetV2 transfer learning to learn features relevant to plant disease classification.
 
-Outputs:
+The trained model and class labels are saved in the `models/` directory. Training visualizations and logs are saved in the `results/` directory.
 
-- `models/plant_disease_model.keras`
-- `models/class_names.json`
-- `results/training_log.csv`
-- `results/training_curves.png`
+**Note:** Training from scratch requires the dataset and may take time depending on your hardware.
 
-## 4. Evaluate the model
+## 📊 Model Evaluation
+
+Evaluate the trained model using:
 
 ```bash
 python src/evaluate.py
 ```
 
-Outputs:
+The evaluation process calculates classification metrics and generates evaluation artifacts, including:
 
-- `results/evaluation_report.txt` (accuracy, precision, recall, F1-score)
-- `results/confusion_matrix.png`
+- Test accuracy
+- Precision, recall, and F1-score
+- Classification report
+- Confusion matrix
 
-Report the measured results from your own run; do not claim a specific accuracy before training and evaluation have completed.
+The generated results are stored in the `results/` directory.
 
-## 5. Predict one image
+### Recorded Evaluation Result
 
-Copy a leaf photo into `sample_images/`, for example `sample_images/leaf.jpg`, then run:
+| Metric | Result |
+|---|---:|
+| Test accuracy | 95.35% |
+| Macro-average precision | 0.95 |
+| Macro-average recall | 0.94 |
+| Macro-average F1-score | 0.94 |
+| Weighted-average precision | 0.96 |
+| Weighted-average recall | 0.95 |
+| Weighted-average F1-score | 0.95 |
+
+These values reflect the recorded evaluation run. Results may vary if the dataset, split, preprocessing, or training configuration changes.
+
+## 🌐 Run the Web Application
+
+After installing the dependencies and ensuring the trained model files are available, launch the Streamlit application:
+
+```bash
+python -m streamlit run src/app.py
+```
+
+Streamlit will display a local URL in the terminal, typically:
+
+```text
+http://localhost:8501
+```
+
+Open that address in your browser.
+
+### How to Use the Application
+
+1. Launch the application.
+2. Upload a plant leaf image using the upload control.
+3. Wait for the model to process the image.
+4. Review the predicted disease class and confidence score.
+5. Compare the top-three predictions if displayed by the application.
+
+**Important:** Model predictions are estimates and should not be treated as a confirmed agricultural diagnosis.
+
+## 🔎 Predict a Single Image
+
+To classify an image from the command line, run:
 
 ```bash
 python src/predict.py sample_images/leaf.jpg
 ```
 
-Show five candidates instead of three:
+Replace `leaf.jpg` with the actual image filename.
 
-```bash
-python src/predict.py sample_images/leaf.jpg --top 5
-```
+Ensure the image exists at the specified path and that the trained model and class-label files are present in `models/`.
 
-## 6. Run the web interface (optional)
+## 📈 Results and Visualizations
 
-```bash
-streamlit run src/app.py
-```
+The project generates the following outputs:
 
-A local URL will appear in the terminal. Open it in your browser and upload a JPG or PNG leaf photo.
+- `results/training_curves.png` — visualization of training progress
+- `results/confusion_matrix.png` — comparison of true and predicted classes
+- `results/evaluation_report.txt` — detailed classification metrics
+- `results/training_log.csv` — recorded training metrics
 
-## Common issues
+These files can be used for project demonstrations, analysis, and documentation.
 
-- **`No module named ...`:** activate `.venv` and run `python -m pip install -r requirements.txt`.
-- **TensorFlow installation error:** use Python 3.11 and check the official TensorFlow instructions for your macOS architecture.
-- **Dataset download fails:** check internet and disk space, then rerun `python src/download_dataset.py`; TFDS normally caches downloaded source data.
-- **Model file missing:** download/export data, then run training before evaluation or prediction.
-- **Training is slow:** lower `BATCH_SIZE` to `16` and `EPOCHS` to `3` in `src/train.py` for a quick demonstration run.
-- **GitHub rejects a large file:** dataset, model, and generated outputs are ignored by `.gitignore`; do not commit the dataset or trained model.
+## 🌾 Dataset Information
 
-## GitHub upload
+This project uses the PlantVillage plant leaf image dataset, which contains images representing multiple plant species and disease categories.
 
-Create an empty repository on GitHub, then run from the project root (replace the URL with your repository URL):
+The evaluated model recognizes **38 classes** in the recorded experiment.
 
-```bash
-git init
-git add .
-git commit -m "Plant Leaf Disease Detection using MobileNetV2"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/Plant-Leaf-Disease-Detection.git
-git push -u origin main
-```
-
-If Git is already initialized, do not repeat `git init` or add a second remote; check with `git status` and `git remote -v` first.
-
-## Dataset credit
-
-PlantVillage dataset introduced by Mohanty, Hughes, and Salathé, “Using Deep Learning for Image-Based Plant Disease Detection,” *Frontiers in Plant Science* (2016), DOI: 10.3389/fpls.2016.01419. TensorFlow Datasets provides a republished version of the dataset. Check the source dataset's license and citation requirements before redistribution.
-=======
-The trained model will be saved inside the `models/` directory.
-
-### Predict a disease
-
-```bash
-python src/predict.py
-```
-
-The program will process the leaf image and return the predicted disease class.
-
-## 📈 Model
-
-The project uses **MobileNetV2** with Transfer Learning.
-
-### Model Pipeline
-
-```text
-Input Image
-    ↓
-Resize Image
-    ↓
-Normalize Pixel Values
-    ↓
-MobileNetV2 Base Model
-    ↓
-Global Average Pooling
-    ↓
-Dense Layer
-    ↓
-Output Layer
-    ↓
-Disease Prediction
-```
-
-## 🔬 Evaluation
-
-The model can be evaluated using:
-
-* Accuracy
-* Precision
-* Recall
-* F1-Score
-* Confusion Matrix
-
-## 📷 Example Prediction
-
-```text
-Input:
-Tomato Leaf Image
-
-Prediction:
-Crop     : Tomato
-Status   : Diseased
-Disease  : Tomato Early Blight
-```
-
-## 🌾 Real-World Application
-
-This project can be integrated into an agricultural application such as **KissanConnect**.
-
-A possible workflow is:
-
-```text
-Farmer
-   ↓
-Upload / Capture Leaf Photo
-   ↓
-AI Disease Detection
-   ↓
-Disease Identification
-   ↓
-Display Result
-   ↓
-Provide Agricultural Guidance
-```
+The dataset is excluded from Git because of its size. Users must prepare or download the dataset separately before training or evaluation.
 
 ## ⚠️ Limitations
 
-* Model performance depends on image quality.
-* Predictions may be less accurate for leaves photographed in environments different from the training dataset.
-* The model should be considered an assistance tool rather than a replacement for professional agricultural diagnosis.
-* More real-world field images can be added to improve generalization.
+- Predictions depend on image quality and similarity to the training data.
+- Backgrounds, lighting, leaf orientation, and image artifacts may affect results.
+- High confidence does not guarantee that a prediction is correct.
+- The model should be evaluated on additional real-world images before practical agricultural deployment.
+- Predictions are intended for educational and research purposes, not as a substitute for expert agricultural advice.
 
 ## 🔮 Future Enhancements
 
-* 📱 Develop a mobile application.
-* 🌐 Deploy the model as a web API.
-* 🌱 Add more crops and diseases.
-* 📍 Use location information for agricultural recommendations.
-* 🌦️ Combine disease detection with weather information.
-* 🤖 Add AI-based agricultural recommendations.
-* 🗣️ Support multiple languages such as English, Telugu, and Hindi.
-* ☁️ Deploy the model to a cloud platform.
+- Add treatment and prevention recommendations for identified diseases.
+- Expand testing with field-collected leaf images.
+- Improve robustness to different lighting and backgrounds.
+- Deploy the application to a cloud hosting platform.
+- Add prediction history and downloadable reports.
+- Support additional crops and disease categories.
 
-## 👩‍💻 Author
+## 👥 Project Purpose
 
-**Nikhil Sangu**
+This project demonstrates how deep learning and transfer learning can be applied to plant disease classification through an accessible web interface.
 
-Machine Learning / Deep Learning Project
->>>>>>> 4f107bb262c90f5a280493954835e6868d43c0f1
+## 📄 License
+
+Add an appropriate license before redistributing the project. Ensure that the dataset and any pretrained model components are used according to their respective licenses.
+
+## 🙌 Acknowledgements
+
+- TensorFlow and Keras for deep learning tools
+- The MobileNetV2 architecture and its pretrained weights
+- The PlantVillage dataset for plant leaf image data
+- Streamlit for the interactive web application framework
